@@ -99,29 +99,54 @@ public struct SwiftToJava {
 
     try translator.analyze()
 
-    switch config.effectiveMode {
-    case .ffm:
-      let generator = FFMSwift2JavaGenerator(
+    switch config.effectiveLang {
+    case .kotlinJvm:
+      let generator = KotlinJVMGenerator(
+        config: self.config,
+        translator: translator,
+        kotlinPackage: config.javaPackage ?? "",
+        swiftOutputDirectory: outputSwiftDirectory,
+        kotlinOutputDirectory: outputJavaDirectory
+      )
+
+      try generator.generate()
+      
+      let ffmGeneratorForSwift = FFMSwift2JavaGenerator(
         config: self.config,
         translator: translator,
         javaPackage: config.javaPackage ?? "",
         swiftOutputDirectory: outputSwiftDirectory,
         javaOutputDirectory: outputJavaDirectory
       )
+      
+      try ffmGeneratorForSwift.writeSwiftThunkSources()
+      try ffmGeneratorForSwift.writeSwiftExpectedEmptySources()
 
-      try generator.generate()
+    case .java:
+      switch config.effectiveMode {
+      case .ffm:
+        let generator = FFMSwift2JavaGenerator(
+          config: self.config,
+          translator: translator,
+          javaPackage: config.javaPackage ?? "",
+          swiftOutputDirectory: outputSwiftDirectory,
+          javaOutputDirectory: outputJavaDirectory
+        )
 
-    case .jni:
-      let generator = JNISwift2JavaGenerator(
-        config: self.config,
-        translator: translator,
-        javaPackage: config.javaPackage ?? "",
-        swiftOutputDirectory: outputSwiftDirectory,
-        javaOutputDirectory: outputJavaDirectory,
-        javaClassLookupTable: wrappedJavaClassesLookupTable
-      )
+        try generator.generate()
 
-      try generator.generate()
+      case .jni:
+        let generator = JNISwift2JavaGenerator(
+          config: self.config,
+          translator: translator,
+          javaPackage: config.javaPackage ?? "",
+          swiftOutputDirectory: outputSwiftDirectory,
+          javaOutputDirectory: outputJavaDirectory,
+          javaClassLookupTable: wrappedJavaClassesLookupTable
+        )
+
+        try generator.generate()
+      }
     }
 
     print("[swift-java] Imported Swift module '\(swiftModule)': " + "done.".green)

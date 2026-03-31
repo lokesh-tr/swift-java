@@ -42,6 +42,9 @@ extension SwiftJava {
     @Option(help: "The mode of generation to use for the output files. Used with jextract mode.")
     var mode: JExtractGenerationMode?
 
+    @Option(help: "The target language to generate sources for (e.g. java, kotlin-jvm).")
+    var lang: JExtractTargetLang?
+
     @Option(help: "The name of the Swift module into which the resulting Swift types will be generated.")
     var swiftModule: String
 
@@ -49,13 +52,13 @@ extension SwiftJava {
       swiftModule
     }
 
-    @Option(help: "The Java package the generated Java code should be emitted into.")
+    @Option(name: [.customLong("package"), .customLong("java-package")], help: "The package the generated code should be emitted into.")
     var javaPackage: String? = nil
 
     @Option(help: "The directory where generated Swift files should be written. Generally used with jextract mode.")
     var outputSwift: String
 
-    @Option(help: "The directory where generated Java files should be written. Generally used with jextract mode.")
+    @Option(name: [.customLong("output-generated"), .customLong("output-java")], help: "The directory where generated files should be written. Generally used with jextract mode.")
     var outputJava: String
 
     @Flag(
@@ -137,6 +140,7 @@ extension SwiftJava.JExtractCommand {
   func runSwiftJavaCommand(config: inout Configuration) async throws {
     configure(&config.javaPackage, overrideWith: self.javaPackage)
     configure(&config.mode, overrideWith: self.mode)
+    configure(&config.lang, overrideWith: self.lang)
     config.swiftModule = self.effectiveSwiftModule
     config.outputJavaDirectory = outputJava
     config.outputSwiftDirectory = outputSwift
@@ -211,6 +215,7 @@ struct IllegalModeCombinationError: Error {
 }
 
 extension JExtractGenerationMode: ExpressibleByArgument {}
+extension JExtractTargetLang: ExpressibleByArgument {}
 extension JExtractMinimumAccessLevelMode: ExpressibleByArgument {}
 extension JExtractMemoryManagementMode: ExpressibleByArgument {}
 extension JExtractAsyncFuncMode: ExpressibleByArgument {}

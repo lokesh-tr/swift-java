@@ -28,6 +28,11 @@ public struct Configuration: Codable {
 
   // ==== swift 2 java / jextract swift ---------------------------------------
 
+  public var lang: JExtractTargetLang?
+  public var effectiveLang: JExtractTargetLang {
+    lang ?? .default
+  }
+
   public var javaPackage: String?
 
   public var swiftModule: String?

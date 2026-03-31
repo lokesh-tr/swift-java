@@ -101,6 +101,31 @@ Required language/runtime versions:
 - **Java 7+**, including 
 
 
+## swift-java jextract --lang kotlin-jvm
+
+In this mode, the `jextract` tool parses top-level Swift functions and generates fully functional Kotlin JVM FFM bindings mapped directly to Swift primitives (`Int`, `Double`, `Boolean`, `Unit`). The generator automatically builds the required Java `MethodHandle` layouts alongside the Swift `@_cdecl` underlying C-ABI boundaries mapping natively to the JVM dynamically. 
+
+Note that this target is currently an experimental proof-of-concept; advanced type support for Classes, Structs, and Strings natively bridging memory are omitted.
+
+Example usage:
+```bash
+> swift-java jextract \
+    --lang kotlin-jvm \
+    --input-swift Sources/MySwiftLibrary \
+    --package com.example.swift \
+    --output-swift .build/plugins/outputs/swift \
+    --output-generated .build/plugins/outputs/kotlin
+```
+
+You can test this behavior and verify the actual FFM execution using the provided `KotlinExample` sample module:
+```bash
+> ./gradlew :Samples:KotlinExample:run
+```
+
+Required language/runtime versions:
+- **Swift 6.2+** 
+- **JDK 25+ / Kotlin 2.1.10+** (Required due to `java.lang.foreign` FFM reliance and compiler targeting)
+
 ## Development and Testing
 
 This project contains multiple builds, living side by side together.
