@@ -1,5 +1,9 @@
 # Swift Java Interoperability Tools and Libraries
 
+> **GSoC 2026 Note**
+> This repository is a modified fork created by myself for the Google Summer of Code 2026 project "Swift-to-Kotlin Interop PoC". 
+> It has been actively extended to support Swift to Kotlin/JVM interoperability via the new `--lang kotlin-jvm` feature flag. For complete architectural details, FFM bridging strategies, and execution instructions, please refer to [DESIGN.md](DESIGN.md).
+
 This project contains tools and libraries that facilitate **Swift & Java Interoperability**.
 
 - Swift library (`SwiftJava`) and bindings generator that allows a Swift program to make use of Java libraries by wrapping Java classes in corresponding Swift types, allowing Swift to directly call any wrapped Java API.
